@@ -13,7 +13,7 @@ afterAll(()=>{
 });
 
 describe("app", ()=>{
-    describe.only("/api/topics", ()=>{
+    describe("/api/topics", ()=>{
         test("200 : Responds with all topics in db", ()=>{
             return request(app).get("/api/topics")
             .expect(200)
