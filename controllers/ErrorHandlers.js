@@ -1,6 +1,11 @@
 const { request } = require("../app");
 
-exports.handle500Status = ((error, request, response, next)=>{
+exports.handle500Status = ((error, request, response, next) => {
     console.log(error);
-    response.status(500).send({msg: "There has been a server error"})
-});
+    const status = error.status || 500;
+    const message = error.message || 'Internal Server Error';
+    response.status(status).send({msg: message});
+  });
+  
+
+  
