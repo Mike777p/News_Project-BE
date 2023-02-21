@@ -3,7 +3,8 @@ const { fetchCommentCounts } = require("../models.js/articleModel");
 const getArticles = (request, response, next) => {
   return fetchCommentCounts().then((data) => {
     finishedData = data.map((obj) => {
-      return { ...obj, comment_count: parseInt(obj.comment_count) };
+       const {comment_count} = obj
+      return { ...obj, comment_count: parseInt(comment_count) };
     });
 
     finishedData.sort((a, b) => {
