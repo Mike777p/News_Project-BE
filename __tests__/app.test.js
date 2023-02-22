@@ -41,10 +41,11 @@ describe("app", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          expect(body).toBeInstanceOf(Array);
-          expect(body).toHaveLength(12);
-          expect(body).toBeSorted({ descending: true });
-          body.forEach((obj) => {
+          console.log(body.articles)
+          expect(body.articles).toBeInstanceOf(Array);
+          expect(body.articles).toHaveLength(12);
+          expect(body.articles).toBeSorted({ descending: true });
+          body.articles.forEach((obj) => {
             expect(obj).toMatchObject({
                 author: expect.any(String),
                 title: expect.any(String),

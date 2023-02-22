@@ -6,8 +6,8 @@ const getArticles = (request, response, next) => {
        const {comment_count} = obj
       return { ...obj, comment_count: parseInt(comment_count) };
     });
-
-    return response.status(200).json(finishedData);
+    
+    return response.status(200).json({articles: finishedData});
   })
   .catch((error) => {
     // If error occurs, call the next middleware function with the error
