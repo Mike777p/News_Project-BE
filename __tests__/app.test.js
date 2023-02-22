@@ -41,29 +41,44 @@ describe("app", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          console.log(body.articles)
           expect(body.articles).toBeInstanceOf(Array);
           expect(body.articles).toHaveLength(12);
           expect(body.articles).toBeSorted({ descending: true });
           body.articles.forEach((obj) => {
             expect(obj).toMatchObject({
-                author: expect.any(String),
-                title: expect.any(String),
-                article_id: expect.any(Number),
-                topic: expect.any(String),
-                created_at: expect.any(String),
-                votes: expect.any(Number),
-                article_img_url: expect.any(String),
-                comment_count: expect.any(Number),
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
             });
           });
         });
     });
-    test("404: Path not found", ()=>{
-      return request(app).get("/api/wrongPath").expect(404).then(({body})=>{
-        expect(body.msg).toBe('Path not found')
-      })
-      })
-    })
-  })
-
+    test("404: Path not found", () => {
+      return request(app)
+        .get("/api/wrongPath")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path not found");
+        });
+    });
+  });
+  describe("/api/articles/:article_id", () => {
+    test("200: Responds with an object articles with all keys with said ID", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+          expect(body.article).toBeInstanceOf(Object);
+          expect(body.article.title).toBe(
+            "Living in the shadow of a great man"
+          );
+        });
+    });
+  });
+});
