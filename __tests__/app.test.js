@@ -41,7 +41,6 @@ describe("app", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-            console.log(body)
           expect(body).toBeInstanceOf(Array);
           expect(body).toHaveLength(12);
           expect(body).toBeSorted({ descending: true });
@@ -59,5 +58,11 @@ describe("app", () => {
           });
         });
     });
-  });
-});
+    test("404: Path not found", ()=>{
+      return request(app).get("/api/wrongPath").expect(404).then(({body})=>{
+        expect(body.msg).toBe('Path not found')
+      })
+      })
+    })
+  })
+
