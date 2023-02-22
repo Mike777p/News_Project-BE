@@ -7,6 +7,12 @@ const getArticles = (request, response, next) => {
       return { ...obj, comment_count: parseInt(comment_count) };
     });
 
+    finishedData.sort((a, b) => {
+      const dateA = new Date(a.created_at);
+      const dateB = new Date(b.created_at);
+      return dateB - dateA;
+    });
+
     return response.status(200).json(finishedData);
   })
   .catch((error) => {
