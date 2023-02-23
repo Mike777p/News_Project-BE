@@ -3,7 +3,6 @@ exports.handle404PathNotFound = ((request, response, next)=>{
 })
 
 exports.handle400StatusBadRequest = ((error, request, response, next) => {
-  console.log("400", error);
   if (error.code === '22P02'){
     response.status(400).send({msg: "Bad Request"});
   } else {next(error)}

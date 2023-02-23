@@ -5,6 +5,7 @@ const {
   getArticles,
   getArticleByID,
 } = require("./controllers/articleController");
+const  { getCommentByArticleID } = require("./controllers/commentController")
 const {
   handle500Status,
   handle404PathNotFound,
@@ -18,6 +19,8 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:id", getArticleByID);
+
+app.get("/api/articles/:id/comments", getCommentByArticleID);
 
 app.use(handle404PathNotFound);
 
