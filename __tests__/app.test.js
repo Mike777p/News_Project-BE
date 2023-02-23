@@ -93,7 +93,8 @@ describe("app", () => {
       .get("/api/articles/300")
       .expect(404)
       .then(({ body }) => {
-      console.log(body)
+        expect(body.msg).toBe("Not found")
+     
   });
 });
 });
