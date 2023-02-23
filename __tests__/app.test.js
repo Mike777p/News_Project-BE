@@ -34,7 +34,7 @@ describe("app", () => {
           });
         });
     });
-  })
+  });
   describe("/api/articles", () => {
     test("200: Responds with an array of articles with all keys with added comment count", () => {
       return request(app)
@@ -77,27 +77,26 @@ describe("app", () => {
           expect(body.article.title).toBe(
             "Living in the shadow of a great man"
           );
-          expect(body.article.article_id).toBe(1)
+          expect(body.article.article_id).toBe(1);
         });
-    })
+    });
     test("400: Responds with 400 when passed not a number, bad request", () => {
       return request(app)
         .get("/api/articles/a")
         .expect(400)
         .then(({ body }) => {
-        expect(body.msg).toBe('Bad Request')
+          expect(body.msg).toBe("Bad Request");
+        });
     });
-  })
-  test("404: Valid article ID but no resource found", () => {
-    return request(app)
-      .get("/api/articles/300")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not found")
-     
+    test("404: Valid article ID but no resource found", () => {
+      return request(app)
+        .get("/api/articles/300")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not found");
+        });
+    });
   });
-});
-});
 });
 
 describe("/api/articles/:article_id/comments", () => {
@@ -106,28 +105,36 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
-        console.log("test", body)
-        expect(body.articles).toBeInstanceOf(Array);
-        // expect(body.articles).toHaveLength(12);
-        // expect(body.articles).toBeSorted({ descending: true });
-        // body.articles.forEach((obj) => {
-        //   expect(obj).toMatchObject({
-        //     author: expect.any(String),
-        //     body : expect.any(Srting),
-        //     article_id: expect.any(Number),
-        //     created_at: expect.any(String),
-        //     votes: expect.any(Number),
-        //     comment_id: expect.any(Number),
-        //   });
-        // });
+        expect(body.comments).toBeInstanceOf(Array);
+        expect(body.comments).toHaveLength(11);
+        expect(body.comments).toBeSorted({ descending: true });
+        expect(body.comments[0].article_id).toBe(1);
+        body.comments.forEach((obj) => {
+          expect(obj).toMatchObject({
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_id: expect.any(Number),
+          });
+        });
       });
   });
-  // test("404: Path not found", () => {
-  //   return request(app)
-  //     .get("/api/wrongPath")
-  //     .expect(404)
-  //     .then(({ body }) => {
-  //       expect(body.msg).toBe("Path not found");
-  //     });
-  // });
+  test("400: Responds with 400 when passed not a number, bad request", () => {
+    return request(app)
+      .get("/api/articles/a/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("404: Valid article ID but no resource found", () => {
+    return request(app)
+      .get("/api/articles/300/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
 });

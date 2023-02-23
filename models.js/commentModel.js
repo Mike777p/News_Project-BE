@@ -1,7 +1,6 @@
 const db = require("../db/connection");
 
-exports.fetchCommentByArticleID = (id) => {
-    console.log("Fetch db triggered, did db return?")
+const fetchCommentByArticleID = (id) => {
     return db
       .query(
         `SELECT * FROM comments 
@@ -9,7 +8,8 @@ exports.fetchCommentByArticleID = (id) => {
         [id]
       )
       .then((data) => {
-        console.log("db returned! in model", data)
         return data.rows;
       })
   };
+
+  module.exports = { fetchCommentByArticleID }
