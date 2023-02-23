@@ -8,6 +8,7 @@ const {
 const {
   handle500Status,
   handle404PathNotFound,
+  handle400StatusBadRequest,
 } = require("./controllers/ErrorHandlers");
 
 app.use(express.json());
@@ -19,6 +20,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:id", getArticleByID);
 
 app.use(handle404PathNotFound);
+
+app.use(handle400StatusBadRequest);
 
 app.use(handle500Status);
 

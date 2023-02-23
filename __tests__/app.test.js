@@ -34,7 +34,7 @@ describe("app", () => {
           });
         });
     });
-  });
+  })
   describe("/api/articles", () => {
     test("200: Responds with an array of articles with all keys with added comment count", () => {
       return request(app)
@@ -68,17 +68,33 @@ describe("app", () => {
     });
   });
   describe("/api/articles/:article_id", () => {
-    test("200: Responds with an object articles with all keys with said ID", () => {
+    test("200: Responds with an object article with said ID", () => {
       return request(app)
         .get("/api/articles/1")
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           expect(body.article).toBeInstanceOf(Object);
           expect(body.article.title).toBe(
             "Living in the shadow of a great man"
           );
+          expect(body.article.article_id).toBe(1)
         });
+    })
+    test("400: Responds with 400 when passed not a number, bad request", () => {
+      return request(app)
+        .get("/api/articles/a")
+        .expect(400)
+        .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
     });
+  })
+  test("404: Valid article ID but no resource found", () => {
+    return request(app)
+      .get("/api/articles/300")
+      .expect(404)
+      .then(({ body }) => {
+      console.log(body)
   });
+});
+});
 });

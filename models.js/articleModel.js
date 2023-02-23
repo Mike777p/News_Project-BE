@@ -22,5 +22,5 @@ exports.fetchArticleByID = (id) => {
     )
     .then((data) => {
       return data.rows;
-    });
+    })
 };

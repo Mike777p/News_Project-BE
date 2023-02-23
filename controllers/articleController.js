@@ -14,12 +14,19 @@ const getArticles = (request, response, next) => {
 };
 
 const getArticleByID = (request, response, next) => {
-  console.log("getArticleByID");
   const { id } = request.params;
   return fetchArticleByID(id).then((data) => {
-    const articleByID = { article: data[0] };
-    response.status(200).send(articleByID);
-  });
+    console.log(data.length)
+    if (data.length > 0) {
+      const articleByID = { article: data[0] };
+      response.status(200).send(articleByID);
+    } else {
+      response.status(404).send({msg: "Not found"})
+    }
+  })
+  .catch((error)=>{
+    next(error)
+  })
 };
 
 module.exports = {
