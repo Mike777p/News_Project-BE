@@ -34,36 +34,68 @@ describe("app", () => {
           });
         });
     });
-  });
+  })
   describe("/api/articles", () => {
     test("200: Responds with an array of articles with all keys with added comment count", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          console.log(body.articles)
           expect(body.articles).toBeInstanceOf(Array);
           expect(body.articles).toHaveLength(12);
           expect(body.articles).toBeSorted({ descending: true });
           body.articles.forEach((obj) => {
             expect(obj).toMatchObject({
-                author: expect.any(String),
-                title: expect.any(String),
-                article_id: expect.any(Number),
-                topic: expect.any(String),
-                created_at: expect.any(String),
-                votes: expect.any(Number),
-                article_img_url: expect.any(String),
-                comment_count: expect.any(Number),
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
             });
           });
         });
     });
-    test("404: Path not found", ()=>{
-      return request(app).get("/api/wrongPath").expect(404).then(({body})=>{
-        expect(body.msg).toBe('Path not found')
-      })
-      })
+    test("404: Path not found", () => {
+      return request(app)
+        .get("/api/wrongPath")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path not found");
+        });
+    });
+  });
+  describe("/api/articles/:article_id", () => {
+    test("200: Responds with an object article with said ID", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toBeInstanceOf(Object);
+          expect(body.article.title).toBe(
+            "Living in the shadow of a great man"
+          );
+          expect(body.article.article_id).toBe(1)
+        });
     })
+    test("400: Responds with 400 when passed not a number, bad request", () => {
+      return request(app)
+        .get("/api/articles/a")
+        .expect(400)
+        .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+    });
   })
-
+  test("404: Valid article ID but no resource found", () => {
+    return request(app)
+      .get("/api/articles/300")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found")
+     
+  });
+});
+});
+});
