@@ -99,3 +99,35 @@ describe("app", () => {
 });
 });
 });
+
+describe("/api/articles/:article_id/comments", () => {
+  test("200: Returns an array of comments of said ID", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        console.log("test", body)
+        expect(body.articles).toBeInstanceOf(Array);
+        // expect(body.articles).toHaveLength(12);
+        // expect(body.articles).toBeSorted({ descending: true });
+        // body.articles.forEach((obj) => {
+        //   expect(obj).toMatchObject({
+        //     author: expect.any(String),
+        //     body : expect.any(Srting),
+        //     article_id: expect.any(Number),
+        //     created_at: expect.any(String),
+        //     votes: expect.any(Number),
+        //     comment_id: expect.any(Number),
+        //   });
+        // });
+      });
+  });
+  // test("404: Path not found", () => {
+  //   return request(app)
+  //     .get("/api/wrongPath")
+  //     .expect(404)
+  //     .then(({ body }) => {
+  //       expect(body.msg).toBe("Path not found");
+  //     });
+  // });
+});
