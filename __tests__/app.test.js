@@ -148,7 +148,6 @@ describe("app", () => {
       .send(requestBody)
       .expect(201)
       .then(({ body }) => {
-        console.log("got response at TEST!!!", body)
         expect(body[0].article_id).toBe(1)
         expect(body[0].body).toBe(message)
         expect(body[0].author).toBe(username)
