@@ -45,11 +45,12 @@ const patchArticleById = (request, response, next) => {
   const { article_id } = request.params;
   const { inc_votes } = request.body;
   return FetchpatchArticleById(inc_votes, article_id)
-    .then((data) => {
+    .then((article) => {
       if (data.length === 0) {
-        response.status(404).send(data)
-      } else {response.status(200).send(data)};
-    })
+        response.status(404).send({"article" : article})
+      } else {response.status(200).send({"article" : article})
+    }
+  })
     .catch((error) => {
       next(error);
     });
