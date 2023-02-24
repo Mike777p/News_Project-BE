@@ -3,8 +3,9 @@ const app = express();
 const getTopics = require("./controllers/topics.controller");
 const {
   getArticles,
-  getArticleByID,
-  postCommentByArticleID,
+  getArticleById,
+  postCommentByArticleId,
+  patchArticleById,
 } = require("./controllers/articleController");
 const  { getCommentByArticleID } = require("./controllers/commentController")
 const {
@@ -19,11 +20,13 @@ app.get("/api/topics", getTopics);
 
 app.get("/api/articles", getArticles);
 
-app.get("/api/articles/:id", getArticleByID);
+app.get("/api/articles/:id", getArticleById);
 
 app.get("/api/articles/:id/comments", getCommentByArticleID);
 
-app.post("/api/articles/:id/comments", postCommentByArticleID);
+app.post("/api/articles/:id/comments", postCommentByArticleId);
+
+app.patch("/api/articles/:article_id", patchArticleById);
 
 app.use(handle404PathNotFound);
 

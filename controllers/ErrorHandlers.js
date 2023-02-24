@@ -5,6 +5,8 @@ exports.handle404PathNotFound = ((request, response, next)=>{
 exports.handle400StatusBadRequest = ((error, request, response, next) => {
   if (error.code === '22P02'){
     response.status(400).send({msg: "Bad Request"});
+  } else if (error.code === "23503") {
+    response.status(404).send([])
   } else {next(error)}
 });
 
@@ -14,5 +16,4 @@ exports.handle500Status = ((error, request, response, next) => {
     const message = error.message || 'Internal Server Error';
     response.status(status).send({msg: message});
   });
-  
 
