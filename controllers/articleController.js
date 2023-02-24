@@ -36,7 +36,7 @@ const postCommentByArticleId = (request, response, next) => {
   const { username, body } = request.body;
   return PostComment(id, username, body)
     .then((data) => {
-      response.status(201).send({ comment: data });
+      response.status(201).send({ "comment": data });
     })
     .catch(next);
 };
@@ -46,7 +46,7 @@ const patchArticleById = (request, response, next) => {
   const { inc_votes } = request.body;
   return FetchpatchArticleById(inc_votes, article_id)
     .then((article) => {
-      if (data.length === 0) {
+      if (article.length === 0) {
         response.status(404).send({"article" : article})
       } else {response.status(200).send({"article" : article})
     }

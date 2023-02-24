@@ -187,8 +187,8 @@ describe("app", () => {
         .send(requestBody)
         .expect(200)
         .then(({ body }) => {
-          expect(body.article_id).toBe(1)
-          expect(body.votes).toBe(101)
+          expect(body.article.article_id).toBe(1)
+          expect(body.article.votes).toBe(101)
         });
     });
     test("200: Responds with an updated article_id Test 2", () => {
@@ -199,8 +199,8 @@ describe("app", () => {
         .send(requestBody)
         .expect(200)
         .then(({ body }) => {
-          expect(body.article_id).toBe(1)
-          expect(body.votes).toBe(105)
+          expect(body.article.article_id).toBe(1)
+          expect(body.article.votes).toBe(105)
         });
     });
     test("400: Responds with 400 when passed not null values missing etc, bad request", () => {
@@ -221,7 +221,7 @@ describe("app", () => {
         .send(requestBody)
         .expect(404)
         .then(({ body }) => {
-          expect(body).toEqual([]);
+          expect(body).toEqual({"article": []});
         });
     });
     });

@@ -26,7 +26,6 @@ const fetchArticleById = (id) => {
 };
 
 const PostComment = (id, username, body) => {
-  // console.log("MADE IT TO DB!!")
   return db
   .query(
     `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;`,
