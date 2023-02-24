@@ -13,7 +13,7 @@ const fetchCommentCounts = () => {
     });
 };
 
-const fetchArticleByID = (id) => {
+const fetchArticleById = (id) => {
   return db
     .query(
       `SELECT * FROM articles 
@@ -25,17 +25,30 @@ const fetchArticleByID = (id) => {
     })
 };
 
-const fetchPostComment = (id, username, body) => {
-  // console.log("MADE IT TO DB!!")
+const PostComment = (id, username, body) => {
   return db
   .query(
     `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;`,
     [id, username, body]
   )
   .then((data) => {
-    // console.log("returned data, did it get back to the controller?")
-    return data.rows;
+    return data.rows[0];
   })
 }
 
-module.exports = { fetchCommentCounts, fetchArticleByID, fetchPostComment }
+const FetchpatchArticleById = (inc_votes, id) => {
+  return db.query(`UPDATE articles
+  SET votes = CASE 
+    WHEN votes >= 0 THEN votes + $1
+    ELSE votes - $1
+  END
+  WHERE article_id = $2 RETURNING *;
+  `, [inc_votes, id]).then((data) => {
+    if (data.rows.length === 0) {
+      return data.rows
+    }
+    return data.rows[0]
+  })
+}
+
+module.exports = { fetchCommentCounts, fetchArticleById, PostComment, FetchpatchArticleById }

@@ -148,19 +148,9 @@ describe("app", () => {
       .send(requestBody)
       .expect(201)
       .then(({ body }) => {
-        expect(body[0].article_id).toBe(1)
-        expect(body[0].body).toBe(message)
-        expect(body[0].author).toBe(username)
-        body.forEach((obj) => {
-          expect(obj).toMatchObject({
-            author: expect.any(String),
-            body: expect.any(String),
-            article_id: expect.any(Number),
-            created_at: expect.any(String),
-            votes: expect.any(Number),
-            comment_id: expect.any(Number),
-          });
-        });
+        expect(body.comment.article_id).toBe(1)
+        expect(body.comment.body).toBe(message)
+        expect(body.comment.author).toBe(username)
       });
   });
   test("400: Responds with 400 when passed not null values missing etc, bad request", () => {
@@ -168,23 +158,96 @@ describe("app", () => {
     const username = 'lurker'
     const requestBody = {username : username, body : message }
     return request(app)
-      .get("/api/articles/a/comments")
+      .post("/api/articles/a/comments")
+      .send(requestBody)
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad Request");
       });
   });
-  test("200: Valid article ID but no resource found", () => {
+  test("404: Valid article ID but no resource found", () => {
     const message = "Random message etc"
     const username = 'lurker'
     const requestBody = {username : username, body : message }
     return request(app)
-      .get("/api/articles/300/comments")
-      .expect(200)
+      .post("/api/articles/300/comments")
+      .send(requestBody)
+      .expect(404)
       .then(({ body }) => {
-        expect(body.comments).toEqual([]);
+        expect(body).toEqual([]);
       });
   });
+ 
+  describe("PATCH /api/articles/:article_id", () => {
+    test("200: Responds with an updated article_id", () => {
+      const votes = 1
+      const requestBody = { inc_votes : votes }
+      return request(app)
+        .patch(`/api/articles/1`)
+        .send(requestBody)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article.article_id).toBe(1)
+          expect(body.article.votes).toBe(101)
+        });
+    });
+    test("200: Responds with an updated article_id Test 2", () => {
+      const votes = 5
+      const requestBody = { inc_votes : votes }
+      return request(app)
+        .patch(`/api/articles/1`)
+        .send(requestBody)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article.article_id).toBe(1)
+          expect(body.article.votes).toBe(105)
+        });
+    });
+    test("400: Responds with 400 when passed not null values missing etc, bad request", () => {
+      const votes = 1
+      const requestBody = { inc_votes : votes }
+      return request(app)
+        .patch("/api/articles/poodle")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+    test("404: Valid article ID but no resource found", () => {
+      const votes = 1
+      const requestBody = { inc_votes : votes }
+      return request(app)
+        .patch("/api/articles/300")
+        .send(requestBody)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({"article": []});
+        });
+    });
+    });
+});
+describe("GET /api/users", ()=>{
+  test("200: Return an array of user objects", ()=> {
+    return request(app).get("/api/users")
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.users).toBeInstanceOf(Array);
+      body.users.forEach((user)=> {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+      })
+    })
+  })
+  test("404: Path not found", () => {
+    return request(app)
+      .get("/api/wrongUserPath")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Path not found");
+      });
   });
-
+})
 });
