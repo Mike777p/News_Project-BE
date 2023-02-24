@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 
-exports.fetchCommentCounts = () => {
+const fetchCommentCounts = () => {
   return db
     .query(
       `SELECT articles.*, COUNT(comments.article_id) AS comment_count
@@ -13,7 +13,7 @@ exports.fetchCommentCounts = () => {
     });
 };
 
-exports.fetchArticleByID = (id) => {
+const fetchArticleByID = (id) => {
   return db
     .query(
       `SELECT * FROM articles 
@@ -24,3 +24,18 @@ exports.fetchArticleByID = (id) => {
       return data.rows;
     })
 };
+
+const fetchPostComment = (id, username, body) => {
+  // console.log("MADE IT TO DB!!")
+  return db
+  .query(
+    `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;`,
+    [id, username, body]
+  )
+  .then((data) => {
+    // console.log("returned data, did it get back to the controller?")
+    return data.rows;
+  })
+}
+
+module.exports = { fetchCommentCounts, fetchArticleByID, fetchPostComment }

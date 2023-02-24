@@ -4,6 +4,7 @@ const getTopics = require("./controllers/topics.controller");
 const {
   getArticles,
   getArticleByID,
+  postCommentByArticleID,
 } = require("./controllers/articleController");
 const  { getCommentByArticleID } = require("./controllers/commentController")
 const {
@@ -21,6 +22,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:id", getArticleByID);
 
 app.get("/api/articles/:id/comments", getCommentByArticleID);
+
+app.post("/api/articles/:id/comments", postCommentByArticleID);
 
 app.use(handle404PathNotFound);
 

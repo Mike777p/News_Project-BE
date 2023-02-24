@@ -18,7 +18,7 @@ afterAll(() => {
 });
 
 describe("app", () => {
-  describe("/api/topics", () => {
+  describe("GET /api/topics", () => {
     test("200 : Responds with all topics in db", () => {
       return request(app)
         .get("/api/topics")
@@ -35,7 +35,7 @@ describe("app", () => {
         });
     });
   });
-  describe("/api/articles", () => {
+  describe("GET /api/articles", () => {
     test("200: Responds with an array of articles with all keys with added comment count", () => {
       return request(app)
         .get("/api/articles")
@@ -67,7 +67,7 @@ describe("app", () => {
         });
     });
   });
-  describe("/api/articles/:article_id", () => {
+  describe("GET /api/articles/:article_id", () => {
     test("200: Responds with an object article with said ID", () => {
       return request(app)
         .get("/api/articles/1")
@@ -97,9 +97,8 @@ describe("app", () => {
         });
     });
   });
-});
 
-describe("/api/articles/:article_id/comments", () => {
+  describe("GET /api/articles/:article_id/comments", () => {
   test("200: Returns an array of comments of said ID", () => {
     return request(app)
       .get("/api/articles/1/comments")
@@ -129,12 +128,63 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Bad Request");
       });
   });
-  test("404: Valid article ID but no resource found", () => {
+  test("200: Valid article ID but no resource found", () => {
     return request(app)
       .get("/api/articles/300/comments")
-      .expect(404)
+      .expect(200)
       .then(({ body }) => {
-        expect(body.msg).toBe("Not found");
+        expect(body.comments).toEqual([]);
       });
   });
+  });
+
+  describe("POST /api/articles/:article_id/comments", () => {
+  test("201: Responds with newly created  object", () => {
+    const message = "Random message etc"
+    const username = 'lurker'
+    const requestBody = {username : username, body : message }
+    return request(app)
+      .post(`/api/articles/1/comments`)
+      .send(requestBody)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body[0].article_id).toBe(1)
+        expect(body[0].body).toBe(message)
+        expect(body[0].author).toBe(username)
+        body.forEach((obj) => {
+          expect(obj).toMatchObject({
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_id: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("400: Responds with 400 when passed not null values missing etc, bad request", () => {
+    const message = "Random message etc"
+    const username = 'lurker'
+    const requestBody = {username : username, body : message }
+    return request(app)
+      .get("/api/articles/a/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("200: Valid article ID but no resource found", () => {
+    const message = "Random message etc"
+    const username = 'lurker'
+    const requestBody = {username : username, body : message }
+    return request(app)
+      .get("/api/articles/300/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
+  });
+
 });
