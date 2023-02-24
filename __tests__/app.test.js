@@ -138,7 +138,7 @@ describe("app", () => {
   });
   });
 
-  describe.only("POST /api/articles/:article_id/comments", () => {
+  describe("POST /api/articles/:article_id/comments", () => {
   test("201: Responds with newly created  object", () => {
     const message = "Random message etc"
     const username = 'lurker'

@@ -11,7 +11,7 @@ const getArticles = (request, response, next) => {
       return { ...obj, comment_count: parseInt(comment_count) };
     });
     response.status(200).send({ articles: finishedData });
-  });
+  }).catch(next)
 };
 
 const getArticleByID = (request, response, next) => {
@@ -23,7 +23,7 @@ const getArticleByID = (request, response, next) => {
     } else {
       response.status(404).send({ msg: "Not found" });
     }
-  });
+  }).catch(next)
 };
 
 const postCommentByArticleID = (request, response, next) => {
