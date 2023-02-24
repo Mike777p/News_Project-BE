@@ -8,6 +8,7 @@ const {
   patchArticleById,
 } = require("./controllers/articleController");
 const  { getCommentByArticleID } = require("./controllers/commentController")
+const { getUsers } = require("./controllers/userController");
 const {
   handle500Status,
   handle404PathNotFound,
@@ -19,6 +20,8 @@ app.use(express.json());
 app.get("/api/topics", getTopics);
 
 app.get("/api/articles", getArticles);
+
+app.get("/api/users", getUsers);
 
 app.get("/api/articles/:id", getArticleById);
 

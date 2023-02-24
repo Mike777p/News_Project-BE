@@ -46,7 +46,9 @@ const patchArticleById = (request, response, next) => {
   const { inc_votes } = request.body;
   return FetchpatchArticleById(inc_votes, article_id)
     .then((data) => {
-      response.status(200).send(data);
+      if (data.length === 0) {
+        response.status(404).send(data)
+      } else {response.status(200).send(data)};
     })
     .catch((error) => {
       next(error);

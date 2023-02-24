@@ -177,9 +177,9 @@ describe("app", () => {
         expect(body).toEqual([]);
       });
   });
-  });
+ 
   describe("PATCH /api/articles/:article_id", () => {
-    test("200: Responds with an updated article", () => {
+    test("200: Responds with an updated article_id", () => {
       const votes = 1
       const requestBody = { inc_votes : votes }
       return request(app)
@@ -189,6 +189,18 @@ describe("app", () => {
         .then(({ body }) => {
           expect(body.article_id).toBe(1)
           expect(body.votes).toBe(101)
+        });
+    });
+    test("200: Responds with an updated article_id Test 2", () => {
+      const votes = 5
+      const requestBody = { inc_votes : votes }
+      return request(app)
+        .patch(`/api/articles/1`)
+        .send(requestBody)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article_id).toBe(1)
+          expect(body.votes).toBe(105)
         });
     });
     test("400: Responds with 400 when passed not null values missing etc, bad request", () => {
@@ -201,16 +213,41 @@ describe("app", () => {
           expect(body.msg).toBe("Bad Request");
         });
     });
-    test.only("200: Valid article ID but no resource found", () => {
+    test("404: Valid article ID but no resource found", () => {
       const votes = 1
       const requestBody = { inc_votes : votes }
       return request(app)
         .patch("/api/articles/300")
         .send(requestBody)
-        .expect(200)
+        .expect(404)
         .then(({ body }) => {
           expect(body).toEqual([]);
         });
     });
     });
+});
+describe("GET /api/users", ()=>{
+  test("200: Return an array of user objects", ()=> {
+    return request(app).get("/api/users")
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.users).toBeInstanceOf(Array);
+      body.users.forEach((user)=> {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+      })
+    })
+  })
+  test("404: Path not found", () => {
+    return request(app)
+      .get("/api/wrongUserPath")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Path not found");
+      });
+  });
+})
 });
