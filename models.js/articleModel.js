@@ -21,9 +21,13 @@ const fetchArticleById = (id) => {
       [id]
     )
     .then((data) => {
+      if (data.rowCount === 0) {
+        return Promise.reject("Item not found")
+      }
       return data.rows;
     })
 };
+
 
 const PostComment = (id, username, body) => {
   return db
@@ -44,8 +48,8 @@ const FetchpatchArticleById = (inc_votes, id) => {
   END
   WHERE article_id = $2 RETURNING *;
   `, [inc_votes, id]).then((data) => {
-    if (data.rows.length === 0) {
-      return data.rows
+    if (data.rowCount === 0) {
+      return Promise.reject("Item not found")
     }
     return data.rows[0]
   })

@@ -1,6 +1,6 @@
 const {fetchCommentByArticleID} = require("../models.js/commentModel");
 
-const getCommentByArticleID = (request, response, next) => {
+const getCommentByArticleId = (request, response, next) => {
   const { id } = request.params;
   return fetchCommentByArticleID(id)
     .then((data) => {
@@ -11,4 +11,4 @@ const getCommentByArticleID = (request, response, next) => {
     });
 };
 
-module.exports = { getCommentByArticleID }
+module.exports = { getCommentByArticleId }

@@ -93,13 +93,13 @@ describe("app", () => {
         .get("/api/articles/300")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).toBe("Not found");
+          expect(body.msg).toBe("Item not found");
         });
     });
   });
 
   describe("GET /api/articles/:article_id/comments", () => {
-  test("200: Returns an array of comments of said ID", () => {
+  it("200: Returns an array of comments of said ID", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
@@ -120,7 +120,7 @@ describe("app", () => {
         });
       });
   });
-  test("400: Responds with 400 when passed not a number, bad request", () => {
+  it("400: Responds with 400 when passed not a number, bad request", () => {
     return request(app)
       .get("/api/articles/a/comments")
       .expect(400)
@@ -128,12 +128,12 @@ describe("app", () => {
         expect(body.msg).toBe("Bad Request");
       });
   });
-  test("200: Valid article ID but no resource found", () => {
+  it("404: Valid article ID but no resource found", () => {
     return request(app)
       .get("/api/articles/300/comments")
-      .expect(200)
+      .expect(404)
       .then(({ body }) => {
-        expect(body.comments).toEqual([]);
+        expect(body.msg).toEqual("Item not found");
       });
   });
   });
@@ -174,7 +174,7 @@ describe("app", () => {
       .send(requestBody)
       .expect(404)
       .then(({ body }) => {
-        expect(body).toEqual([]);
+        expect(body.msg).toEqual("Item not found");
       });
   });
  
@@ -221,7 +221,7 @@ describe("app", () => {
         .send(requestBody)
         .expect(404)
         .then(({ body }) => {
-          expect(body).toEqual({"article": []});
+          expect(body.msg).toEqual("Item not found");
         });
     });
     });

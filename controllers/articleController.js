@@ -21,22 +21,22 @@ const getArticleById = (request, response, next) => {
   const { id } = request.params;
   return fetchArticleById(id)
     .then((data) => {
-      if (data.length > 0) {
-        const articleByID = { article: data[0] };
-        response.status(200).send(articleByID);
-      } else {
-        response.status(404).send({ msg: "Not found" });
-      }
+      // if (data.length > 0) {
+        response.status(200).send({ article: data[0] });
+      // } else {
+        // response.status(404).send({ msg: "Not found" });
+      // }
     })
     .catch(next);
 };
+
 
 const postCommentByArticleId = (request, response, next) => {
   const { id } = request.params;
   const { username, body } = request.body;
   return PostComment(id, username, body)
     .then((data) => {
-      response.status(201).send({ "comment": data });
+        response.status(201).send({ "comment": data });
     })
     .catch(next);
 };
@@ -46,10 +46,7 @@ const patchArticleById = (request, response, next) => {
   const { inc_votes } = request.body;
   return FetchpatchArticleById(inc_votes, article_id)
     .then((article) => {
-      if (article.length === 0) {
-        response.status(404).send({"article" : article})
-      } else {response.status(200).send({"article" : article})
-    }
+    response.status(200).send({"article" : article})
   })
     .catch((error) => {
       next(error);

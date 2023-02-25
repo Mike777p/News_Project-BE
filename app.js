@@ -7,7 +7,7 @@ const {
   postCommentByArticleId,
   patchArticleById,
 } = require("./controllers/articleController");
-const  { getCommentByArticleID } = require("./controllers/commentController")
+const  { getCommentByArticleId } = require("./controllers/commentController")
 const { getUsers } = require("./controllers/userController");
 const {
   handle500Status,
@@ -25,7 +25,7 @@ app.get("/api/users", getUsers);
 
 app.get("/api/articles/:id", getArticleById);
 
-app.get("/api/articles/:id/comments", getCommentByArticleID);
+app.get("/api/articles/:id/comments", getCommentByArticleId);
 
 app.post("/api/articles/:id/comments", postCommentByArticleId);
 
