@@ -11,7 +11,6 @@ exports.handle400StatusBadRequest = ((error, request, response, next) => {
 });
 
 exports.handle500Status = ((error, request, response, next) => {
-    console.log("500", error);
     const status = error.status || 500;
     const message = error.message || 'Internal Server Error';
     response.status(status).send({"msg": message});

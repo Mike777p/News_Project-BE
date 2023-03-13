@@ -1,31 +1,49 @@
 const {
-  fetchCommentCounts,
+  fetchArticles,
+  // fetchCommentCounts,
   fetchArticleById,
   PostComment,
   FetchpatchArticleById
 } = require("../models.js/articleModel");
 
+// const getArticles = (request, response, next) => {
+//   return fetchCommentCounts()
+//     .then((data) => {
+//       finishedData = data.map((obj) => {
+//         const { comment_count } = obj;
+//         return { ...obj, comment_count: parseInt(comment_count) };
+//       });
+//       response.status(200).send({ articles: finishedData });
+//     })
+//     .catch(next);
+// };
+
+// const articleModel = require('../models/articleModel');
+
 const getArticles = (request, response, next) => {
-  return fetchCommentCounts()
-    .then((data) => {
-      finishedData = data.map((obj) => {
+  // console.log(request.query, "<SortBy")
+  const { topic, sort_by ='created_at', order ='desc' } = request.query;
+  
+  fetchArticles(topic, sort_by, order)
+    .then((data) => { 
+        const articles = data.map((obj) => {
         const { comment_count } = obj;
         return { ...obj, comment_count: parseInt(comment_count) };
       });
-      response.status(200).send({ articles: finishedData });
+      response.status(200).send({ articles });
     })
     .catch(next);
 };
+
+module.exports = { getArticles };
+
 
 const getArticleById = (request, response, next) => {
   const { id } = request.params;
   return fetchArticleById(id)
     .then((data) => {
-      // if (data.length > 0) {
+
         response.status(200).send({ article: data[0] });
-      // } else {
-        // response.status(404).send({ msg: "Not found" });
-      // }
     })
     .catch(next);
 };

@@ -1,17 +1,44 @@
 const db = require("../db/connection");
 
-const fetchCommentCounts = () => {
-  return db
-    .query(
-      `SELECT articles.*, COUNT(comments.article_id) AS comment_count
+// const fetchCommentCounts = () => {
+//   return db
+//     .query(
+//       `SELECT articles.*, COUNT(comments.article_id) AS comment_count
+//     FROM articles
+//     LEFT JOIN comments ON articles.article_id = comments.article_id
+//     GROUP BY articles.article_id ORDER BY created_at DESC;`
+//     )
+//     .then((data) => {
+//       return data.rows;
+//     });
+// };
+
+const fetchArticles = (topic, sort_by, order) => {
+  const orderBy = sort_by || 'created_at';
+  const sortOrder = order === 'asc' ? 'ASC' : 'DESC';
+  let whereClause = '';
+
+  if (topic) {
+    whereClause = `WHERE topic = '${topic}'`;
+  }
+  const sql = `
+    SELECT articles.*, COUNT(comments.article_id) AS comment_count
     FROM articles
     LEFT JOIN comments ON articles.article_id = comments.article_id
-    GROUP BY articles.article_id ORDER BY created_at DESC;`
-    )
+    ${whereClause}
+    GROUP BY articles.article_id
+    ORDER BY ${orderBy} ${sortOrder};
+  `;
+
+  return db.query(sql)
     .then((data) => {
-      return data.rows;
-    });
+    return data.rows
+  });
+      
 };
+
+module.exports = { fetchArticles };
+
 
 const fetchArticleById = (id) => {
   return db
@@ -55,4 +82,9 @@ const FetchpatchArticleById = (inc_votes, id) => {
   })
 }
 
-module.exports = { fetchCommentCounts, fetchArticleById, PostComment, FetchpatchArticleById }
+module.exports = { 
+  // fetchCommentCounts, 
+  fetchArticles,
+  fetchArticleById, 
+  PostComment, 
+  FetchpatchArticleById }

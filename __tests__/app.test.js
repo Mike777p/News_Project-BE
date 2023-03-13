@@ -8,6 +8,23 @@ const seed = require("../db/seeds/seed");
 const app = require("../app");
 const connection = require("../db/connection");
 const request = require("supertest");
+// const {convertTimestampToDate} = require("../db/seeds/utils");
+const {aSortedArticles, dSortedArticles} = require("../db/sortedData")
+
+// function convertStampsToISO(obj) {
+//   const date = new Date(obj.created_at);
+//   const isoString = date.toISOString();
+//   return {...obj, created_at : isoString}
+// }
+
+// const formattedArticles = articleData.map((obj)=>{
+//   return convertStampsToISO(obj)
+// })
+
+// const AsortedArticles = formattedArticles.sort((a, b) => a.created_at.localeCompare(b.created_at));
+// const DsortedArticles = formattedArticles.sort((a, b) => b.created_at.localeCompare(a.created_at));
+
+
 
 beforeEach(() => {
   return seed({ topicData, commentData, articleData, userData });
@@ -97,157 +114,229 @@ describe("app", () => {
         });
     });
   });
-
   describe("GET /api/articles/:article_id/comments", () => {
-  it("200: Returns an array of comments of said ID", () => {
-    return request(app)
-      .get("/api/articles/1/comments")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.comments).toBeInstanceOf(Array);
-        expect(body.comments).toHaveLength(11);
-        expect(body.comments).toBeSorted({ descending: true });
-        expect(body.comments[0].article_id).toBe(1);
-        body.comments.forEach((obj) => {
-          expect(obj).toMatchObject({
-            author: expect.any(String),
-            body: expect.any(String),
-            article_id: expect.any(Number),
-            created_at: expect.any(String),
-            votes: expect.any(Number),
-            comment_id: expect.any(Number),
+    it("200: Returns an array of comments of said ID", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toBeInstanceOf(Array);
+          expect(body.comments).toHaveLength(11);
+          expect(body.comments).toBeSorted({ descending: true });
+          expect(body.comments[0].article_id).toBe(1);
+          body.comments.forEach((obj) => {
+            expect(obj).toMatchObject({
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_id: expect.any(Number),
+            });
           });
         });
-      });
-  });
-  it("400: Responds with 400 when passed not a number, bad request", () => {
-    return request(app)
-      .get("/api/articles/a/comments")
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Bad Request");
-      });
-  });
-  it("404: Valid article ID but no resource found", () => {
-    return request(app)
-      .get("/api/articles/300/comments")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toEqual("Item not found");
-      });
-  });
-  });
-
-  describe("POST /api/articles/:article_id/comments", () => {
-  test("201: Responds with newly created  object", () => {
-    const message = "Random message etc"
-    const username = 'lurker'
-    const requestBody = {username : username, body : message }
-    return request(app)
-      .post(`/api/articles/1/comments`)
-      .send(requestBody)
-      .expect(201)
-      .then(({ body }) => {
-        expect(body.comment.article_id).toBe(1)
-        expect(body.comment.body).toBe(message)
-        expect(body.comment.author).toBe(username)
-      });
-  });
-  test("400: Responds with 400 when passed not null values missing etc, bad request", () => {
-    const message = "Random message etc"
-    const username = 'lurker'
-    const requestBody = {username : username, body : message }
-    return request(app)
-      .post("/api/articles/a/comments")
-      .send(requestBody)
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Bad Request");
-      });
-  });
-  test("404: Valid article ID but no resource found", () => {
-    const message = "Random message etc"
-    const username = 'lurker'
-    const requestBody = {username : username, body : message }
-    return request(app)
-      .post("/api/articles/300/comments")
-      .send(requestBody)
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toEqual("Item not found");
-      });
-  });
- 
-  describe("PATCH /api/articles/:article_id", () => {
-    test("200: Responds with an updated article_id", () => {
-      const votes = 1
-      const requestBody = { inc_votes : votes }
+    });
+    it("400: Responds with 400 when passed not a number, bad request", () => {
       return request(app)
-        .patch(`/api/articles/1`)
-        .send(requestBody)
-        .expect(200)
+        .get("/api/articles/a/comments")
+        .expect(400)
         .then(({ body }) => {
-          expect(body.article.article_id).toBe(1)
-          expect(body.article.votes).toBe(101)
+          expect(body.msg).toBe("Bad Request");
         });
     });
-    test("200: Responds with an updated article_id Test 2", () => {
-      const votes = 5
-      const requestBody = { inc_votes : votes }
+    it("404: Valid article ID but no resource found", () => {
       return request(app)
-        .patch(`/api/articles/1`)
-        .send(requestBody)
-        .expect(200)
+        .get("/api/articles/300/comments")
+        .expect(404)
         .then(({ body }) => {
-          expect(body.article.article_id).toBe(1)
-          expect(body.article.votes).toBe(105)
+          expect(body.msg).toEqual("Item not found");
+        });
+    });
+  });
+  describe("POST /api/articles/:article_id/comments", () => {
+    test("201: Responds with newly created  object", () => {
+      const message = "Random message etc";
+      const username = "lurker";
+      const requestBody = { username: username, body: message };
+      return request(app)
+        .post(`/api/articles/1/comments`)
+        .send(requestBody)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.comment.article_id).toBe(1);
+          expect(body.comment.body).toBe(message);
+          expect(body.comment.author).toBe(username);
         });
     });
     test("400: Responds with 400 when passed not null values missing etc, bad request", () => {
-      const votes = 1
-      const requestBody = { inc_votes : votes }
+      const message = "Random message etc";
+      const username = "lurker";
+      const requestBody = { username: username, body: message };
       return request(app)
-        .patch("/api/articles/poodle")
+        .post("/api/articles/a/comments")
+        .send(requestBody)
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Bad Request");
         });
     });
     test("404: Valid article ID but no resource found", () => {
-      const votes = 1
-      const requestBody = { inc_votes : votes }
+      const message = "Random message etc";
+      const username = "lurker";
+      const requestBody = { username: username, body: message };
       return request(app)
-        .patch("/api/articles/300")
+        .post("/api/articles/300/comments")
         .send(requestBody)
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toEqual("Item not found");
         });
     });
-    });
-});
-describe("GET /api/users", ()=>{
-  test("200: Return an array of user objects", ()=> {
-    return request(app).get("/api/users")
-    .expect(200)
-    .then(({ body }) => {
-      expect(body.users).toBeInstanceOf(Array);
-      body.users.forEach((user)=> {
-          expect(user).toMatchObject({
-            username: expect.any(String),
-            name: expect.any(String),
-            avatar_url: expect.any(String),
+
+    describe("PATCH /api/articles/:article_id", () => {
+      test("200: Responds with an updated article_id", () => {
+        const votes = 1;
+        const requestBody = { inc_votes: votes };
+        return request(app)
+          .patch(`/api/articles/1`)
+          .send(requestBody)
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article.article_id).toBe(1);
+            expect(body.article.votes).toBe(101);
           });
-      })
-    })
-  })
-  test("404: Path not found", () => {
+      });
+      test("200: Responds with an updated article_id Test 2", () => {
+        const votes = 5;
+        const requestBody = { inc_votes: votes };
+        return request(app)
+          .patch(`/api/articles/1`)
+          .send(requestBody)
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article.article_id).toBe(1);
+            expect(body.article.votes).toBe(105);
+          });
+      });
+      test("400: Responds with 400 when passed not null values missing etc, bad request", () => {
+        const votes = 1;
+        const requestBody = { inc_votes: votes };
+        return request(app)
+          .patch("/api/articles/poodle")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request");
+          });
+      });
+      test("404: Valid article ID but no resource found", () => {
+        const votes = 1;
+        const requestBody = { inc_votes: votes };
+        return request(app)
+          .patch("/api/articles/300")
+          .send(requestBody)
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toEqual("Item not found");
+          });
+      });
+    });
+  });
+  describe("GET /api/users", () => {
+    test("200: Return an array of user objects", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.users).toBeInstanceOf(Array);
+          body.users.forEach((user) => {
+            expect(user).toMatchObject({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            });
+          });
+        });
+    });
+    test("404: Path not found", () => {
+      return request(app)
+        .get("/api/wrongUserPath")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path not found");
+        });
+    });
+  });
+  describe("GET /api/articles (queries)", () => {
+    it("200 : all articles filtered by topic when a topic query is provided", () => {
+      const topic = "mitch";
+      return request(app)
+        .get(`/api/articles?topic=${topic}`)
+        .expect(200)
+        .then((response) => {
+          const { articles } = response.body;
+          const filteredArticles = articleData.filter(
+            (article) => article.topic === topic
+          );
+          expect(articles).toHaveLength(filteredArticles.length);
+        });
+    });
+  it("200 : All articles sorted by column specified in sort_by query, defaulting to created_at", () => {
     return request(app)
-      .get("/api/wrongUserPath")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Path not found");
+      .get("/api/articles?")
+      .expect(200)
+      .then((response) => {
+        const { articles } = response.body;
+        expect(articles).toEqual(dSortedArticles);
+        });
+
+      });
+  it("200 : All articles sorted by votes when sort_by=votes", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then((response) => {
+        const { articles } = response.body;
+        expect(articles[0].article_id).toEqual(1);
       });
   });
-})
+  // it("200 : All articles sorted by author when sort_by=author", () => {
+  //   return request(app)
+  //     .get("/api/articles?sort_by=author")
+  //     .expect(200)
+  //     .then((response) => {
+  //       const { articles } = response.body;
+  //       const sortedAuthors = aSortedArticles.sort().sort((a, b) => a.author.localeCompare(b.author));
+  //       // console.log(sortedAuthors)
+  //       expect(articles[0].article_id).toEqual(9);
+  //     });
+  // });
+  // it('200 : All articles sorted in ascending order when order query is set to "asc"', () => {
+  //   return request(app)
+  //     .get('/api/articles?order=asc')
+  //     .expect(200)
+  //     .then((response) => {
+  //       const { articles } = response.body;
+  //       expect(articles).toEqual(aSortedArticles);
+  //     });
+  // });
+  // it('200 : All articles sorted in descending order when order query is set to "desc"', () => {
+  //   return request(app)
+  //     .get("/api/articles?order=desc")
+  //     .expect(200)
+  //     .then((response) => {
+  //       const { articles } = response.body;
+  //       expect(articles).toEqual(sortedArticles);
+  //     });
+  // });
+  // it("responds with status 400 if invalid sort_by column is given", () => {
+  //   return request(app)
+  //     .get("/api/articles?sort_by=not_even_a_column!")
+  //     .expect(400)
+  //     .then((response) => {
+  //       expect(response.body.msg).toBe("Bad request");
+  //     });
+  // });
 });
+});
+// })
+

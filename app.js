@@ -28,7 +28,7 @@ app.get("/api/articles/:id", getArticleById);
 
 app.get("/api/articles/:id/comments", getCommentByArticleId);
 
-app.get("/api/articles")
+// app.get("/api/articles")
 
 app.post("/api/articles/:id/comments", postCommentByArticleId);
 
