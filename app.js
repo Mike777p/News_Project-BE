@@ -14,8 +14,9 @@ const {
   handle404PathNotFound,
   handle400StatusBadRequest,
 } = require("./controllers/ErrorHandlers");
+const cors = require('cors');
 
-app.use(express.json());
+app.use(express.json(), cors());
 
 app.get("/api/topics", getTopics);
 
@@ -26,6 +27,8 @@ app.get("/api/users", getUsers);
 app.get("/api/articles/:id", getArticleById);
 
 app.get("/api/articles/:id/comments", getCommentByArticleId);
+
+app.get("/api/articles")
 
 app.post("/api/articles/:id/comments", postCommentByArticleId);
 
