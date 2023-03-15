@@ -1,0 +1,53 @@
+
+
+
+
+
+const fetchArticles = (topic, sort_by, order) => {
+    const sortBy = (sort_by || "created_at");
+    const sortOrder = order === "desc" ? "DESC" : "ASC";
+    
+    let whereClause = "";
+  
+    if (topic) {
+      whereClause = `WHERE topic = '${topic}'`;
+    }
+  
+    const sql = `
+      SELECT articles.*, COUNT(comments.article_id) AS comment_count
+      FROM articles
+      LEFT JOIN comments ON articles.article_id = comments.article_id
+      ${whereClause}
+      GROUP BY articles.article_id
+      ORDER BY ${sortBy} ${sortOrder};
+    `;
+    
+    return db.query(sql)
+      .then((data) => {
+        const articles = data.rows.map(article => ({
+          ...article,
+          comment_count: parseInt(article.comment_count)
+        }));
+        return articles;
+      });
+  };
+  
+
+  const fetchArticleById = (id) => {
+    return db
+      .query(
+        `SELECT articles.*, COUNT(comments.article_id) AS comment_count
+        FROM articles
+        LEFT JOIN comments ON articles.article_id = comments.article_id
+        WHERE articles.article_id = $1
+        GROUP BY articles.article_id`,
+        [id]
+      )
+      .then((data) => {
+        if (data.rowCount === 0) {
+          return Promise.reject("Item not found");
+        }
+        return data.rows[0];
+      });
+  };
+  

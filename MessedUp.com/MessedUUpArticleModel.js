@@ -12,7 +12,7 @@ exports.fetchCommentCounts = (error) => {
     FROM articles
     LEFT JOIN comments ON articles.article_id = comments.article_id
     GROUP BY articles.article_id;`).then(data => {
-        // console.log(data.rows)
+
       return data.rows;
     })
 }
@@ -23,7 +23,6 @@ exports.fetchCommentCounts = (error) => {
 //       FROM comments 
 //       GROUP BY article_id;
 //     `).then(data => {
-//         console.log(data.rows)
 //       return data.rows;
 //     });
 //   };

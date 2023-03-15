@@ -7,14 +7,14 @@ const {
   postCommentByArticleId,
   patchArticleById,
 } = require("./controllers/articleController");
-const  { getCommentByArticleId } = require("./controllers/commentController")
+const { getCommentByArticleId } = require("./controllers/commentController");
 const { getUsers } = require("./controllers/userController");
 const {
   handle500Status,
   handle404PathNotFound,
   handle400StatusBadRequest,
 } = require("./controllers/ErrorHandlers");
-const cors = require('cors');
+const cors = require("cors");
 
 app.use(express.json(), cors());
 

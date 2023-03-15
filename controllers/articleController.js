@@ -6,23 +6,9 @@ const {
   FetchpatchArticleById
 } = require("../models.js/articleModel");
 
-// const getArticles = (request, response, next) => {
-//   return fetchCommentCounts()
-//     .then((data) => {
-//       finishedData = data.map((obj) => {
-//         const { comment_count } = obj;
-//         return { ...obj, comment_count: parseInt(comment_count) };
-//       });
-//       response.status(200).send({ articles: finishedData });
-//     })
-//     .catch(next);
-// };
-
-// const articleModel = require('../models/articleModel');
 
 const getArticles = (request, response, next) => {
-  // console.log(request.query, "<SortBy")
-  const { topic, sort_by ='created_at', order ='desc' } = request.query;
+  const { topic, sort_by ='', order ='' } = request.query;
   
   fetchArticles(topic, sort_by, order)
     .then((data) => { 
@@ -66,7 +52,7 @@ const patchArticleById = (request, response, next) => {
     .then((article) => {
     response.status(200).send({"article" : article})
   })
-    .catch((error) => {
+    .catch((error) => { 
       next(error);
     });
 };
