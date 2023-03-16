@@ -50,6 +50,7 @@ const PostComment = (id, username, body) => {
       [id, username, body]
     )
     .then((data) => {
+      console.info(data)
       return data.rows[0];
     });
 };

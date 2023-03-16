@@ -152,16 +152,17 @@ describe("app", () => {
     });
   });
   describe("POST /api/articles/:article_id/comments", () => {
-    test("201: Responds with newly created  object", () => {
+    test.only("201: Responds with newly created  object", () => {
       const message = "Random message etc";
       const username = "lurker";
       const requestBody = { username: username, body: message };
       return request(app)
-        .post(`/api/articles/1/comments`)
+        .post(`/api/articles/27/comments`)
         .send(requestBody)
         .expect(201)
         .then(({ body }) => {
-          expect(body.comment.article_id).toBe(1);
+          console.info(body)
+          expect(body.comment.article_id).toBe(27);
           expect(body.comment.body).toBe(message);
           expect(body.comment.author).toBe(username);
         });

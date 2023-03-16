@@ -6,7 +6,7 @@ exports.handle400StatusBadRequest = ((error, request, response, next) => {
   if (error.code === '22P02'){
     response.status(400).send({msg: "Bad Request"});
   } else if (error.code === "23503" || error === "Item not found" || error.code === "42601") {
-    response.status(404).send({"msg" : "Item not found"})
+    response.status(404).send({"msg" : "Item not found", error})
   } else {next(error)}
 });
 
