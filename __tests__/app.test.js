@@ -157,12 +157,11 @@ describe("app", () => {
       const username = "lurker";
       const requestBody = { username: username, body: message };
       return request(app)
-        .post(`/api/articles/27/comments`)
+        .post(`/api/articles/1/comments`)
         .send(requestBody)
         .expect(201)
         .then(({ body }) => {
-          console.info(body)
-          expect(body.comment.article_id).toBe(27);
+          expect(body.comment.article_id).toBe(1);
           expect(body.comment.body).toBe(message);
           expect(body.comment.author).toBe(username);
         });
