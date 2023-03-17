@@ -8,7 +8,7 @@ const {
 
 
 const getArticles = (request, response, next) => {
-  const { topic, sort_by ='', order ='desc' } = request.query;
+  const { topic, sort_by ='', order ='' } = request.query;
   
   fetchArticles(topic, sort_by, order)
     .then((data) => { 
