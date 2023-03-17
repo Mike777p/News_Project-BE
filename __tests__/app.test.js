@@ -152,7 +152,7 @@ describe("app", () => {
     });
   });
   describe("POST /api/articles/:article_id/comments", () => {
-    test.only("201: Responds with newly created  object", () => {
+    test("201: Responds with newly created  object", () => {
       const message = "Random message etc";
       const username = "lurker";
       const requestBody = { username: username, body: message };
@@ -352,3 +352,11 @@ describe("app", () => {
 // })
 
 // Stop testing at Task 11 Backend
+
+// Testing delete
+describe.only("DELETE /api/comments/:comment_id", ()=>{
+  test("delete the given comment by comment_id", ()=>{
+    return request(app).delete("/api/comments/3")
+    .expect(204).then(()=>{})
+  })
+})

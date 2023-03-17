@@ -15,4 +15,16 @@ const fetchCommentByArticleID = (id) => {
       })
   };
 
-  module.exports = { fetchCommentByArticleID }
+  const goDeleteCommentById = (id) => {
+    return db.query(
+      `DELETE FROM comments 
+  WHERE comment_id=$1 RETURNING comment_id`,
+      [id]
+    ).then((data) => {
+      return data.fields[0].columnID;
+    });
+  };
+  
+  
+
+  module.exports = { fetchCommentByArticleID, goDeleteCommentById }

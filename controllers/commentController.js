@@ -1,4 +1,4 @@
-const {fetchCommentByArticleID} = require("../models.js/commentModel");
+const {fetchCommentByArticleID, goDeleteCommentById} = require("../models.js/commentModel");
 
 const getCommentByArticleId = (request, response, next) => {
   const { id } = request.params;
@@ -11,4 +11,11 @@ const getCommentByArticleId = (request, response, next) => {
     });
 };
 
-module.exports = { getCommentByArticleId }
+const deleteCommentById = (request, response, next) => {
+  const { id } = request.params;
+  return goDeleteCommentById(id).then((data)=>{
+    response.status(204).send({"deleted" : `column_id: ${data}`})
+  })
+}
+
+module.exports = { getCommentByArticleId, deleteCommentById }
