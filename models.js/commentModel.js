@@ -18,10 +18,10 @@ const fetchCommentByArticleID = (id) => {
   const goDeleteCommentById = (id) => {
     return db.query(
       `DELETE FROM comments 
-  WHERE comment_id=$1 RETURNING comment_id`,
+  WHERE comment_id = $1;`,
       [id]
     ).then((data) => {
-      return data.fields[0].columnID;
+      return data;
     });
   };
   
